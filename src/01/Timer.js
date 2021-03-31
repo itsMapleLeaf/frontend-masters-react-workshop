@@ -1,20 +1,18 @@
-import * as React from 'react';
-import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { ProgressCircle } from '../ProgressCircle';
-
-// import { useMachine } from '@xstate/react';
-import { timerMachine } from './timerMachine';
+import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useMachine } from "@xstate/react"
+import * as React from "react"
+import { ProgressCircle } from "../ProgressCircle"
+import { timerMachine } from "./timerMachine"
 
 export const Timer = () => {
-  const [state, send] = [{}, () => {}];
+  const [state, send] = useMachine(timerMachine)
 
   const { duration, elapsed, interval } = {
     duration: 60,
     elapsed: 0,
     interval: 0.1,
-  };
+  }
 
   return (
     <div
@@ -22,9 +20,9 @@ export const Timer = () => {
       data-state={state.value} // Hint!
       style={{
         // @ts-ignore
-        '--duration': duration,
-        '--elapsed': elapsed,
-        '--interval': interval,
+        "--duration": duration,
+        "--elapsed": elapsed,
+        "--interval": interval,
       }}
     >
       <header>
@@ -36,16 +34,16 @@ export const Timer = () => {
         <div
           className="elapsed"
           onClick={() => {
-            // ...
+            send({ type: "TOGGLE" })
           }}
         >
           {Math.ceil(duration - elapsed)}
         </div>
         <div className="controls">
-          {state === 'paused' && (
+          {state.value === "paused" && (
             <button
               onClick={() => {
-                // ...
+                send({ type: "RESET" })
               }}
             >
               Reset
@@ -54,10 +52,10 @@ export const Timer = () => {
         </div>
       </div>
       <div className="actions">
-        {state === 'running' && (
+        {state.value === "running" && (
           <button
             onClick={() => {
-              // ...
+              send({ type: "TOGGLE" })
             }}
             title="Pause timer"
           >
@@ -65,10 +63,10 @@ export const Timer = () => {
           </button>
         )}
 
-        {(state === 'paused' || state === 'idle') && (
+        {(state.value === "paused" || state.value === "idle") && (
           <button
             onClick={() => {
-              // ...
+              send({ type: "TOGGLE" })
             }}
             title="Start timer"
           >
@@ -77,5 +75,5 @@ export const Timer = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
